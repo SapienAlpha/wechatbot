@@ -16,6 +16,7 @@ import {
 }                  from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
+import onMessage from "./listeners/OnMessage";
 
 function onScan (qrcode: string, status: ScanStatus) {
   if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
@@ -40,16 +41,8 @@ function onLogout (user: Contact) {
   log.info('StarterBot', '%s logout', user)
 }
 
-async function onMessage (msg: Message) {
-  log.info('StarterBot', msg.toString())
-
-  if (msg.text() === 'ding') {
-    await msg.say('dong')
-  }
-}
-
 const bot = WechatyBuilder.build({
-  name: 'SapienAlphaWechatBot',
+  name: 'SapienAlphaBot',
   /**
    * How to set Wechaty Puppet Provider:
    *
