@@ -16,7 +16,7 @@ import {
 }                  from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
-import onMessage from "./listeners/OnMessage";
+import onMessage from "./OnMessage";
 
 function onScan (qrcode: string, status: ScanStatus) {
   if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
@@ -75,5 +75,5 @@ bot.on('logout',  onLogout)
 bot.on('message', onMessage)
 
 bot.start()
-  .then(() => log.info('StarterBot', 'Starter Bot Started.'))
-  .catch(e => log.error('StarterBot', e))
+  .then(() => log.info('SapienAlphaBot', 'SapienAlpha Bot Started.'))
+  .catch(e => log.error('SapienAlphaBot', e))
