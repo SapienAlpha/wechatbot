@@ -18,9 +18,9 @@ npm run build
 ```
 编译生成的文件在dist目录内。
 4. 运行
-执行dist内生成的main.js；win上部署命令应该还需要优化
+执行dist内生成的Main.js；win上部署命令应该还需要优化
 ```shell
-node ./dist/src/main.js
+node ./dist/src/Main.js
 ```
 
 运行成功后，你可以看到下面的界面：

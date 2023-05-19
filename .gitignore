@@ -2,3 +2,5 @@ node_modules
 .idea
 SapienAlphaWechatBot.memory-card.json
 dist
+.DS_Store
+SapienAlphaBot.memory-card.json

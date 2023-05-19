@@ -2,10 +2,10 @@
   "name": "wechatbot",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.ts",
+  "main": "src/Main.ts",
   "scripts": {
     "build": "tsc",
-    "start": "cross-env NODE_OPTIONS=\"--no-warnings --loader=ts-node/esm\" node src/main.ts",
+    "start": "cross-env NODE_OPTIONS=\\\"--no-warnings --loader=ts-node/esm\\\" node src/Main.ts",
     "start:wechat:web": "cross-env WECHATY_LOG=verbose WECHATY_PUPPET=wechaty-puppet-wechat npm start"
   },
   "keywords": [],
@@ -18,6 +18,8 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "ts-node": "^10.9.1"
+    "raven": "^2.6.4",
+    "ts-node": "^10.9.1",
+    "type-fest": "^3.10.0"
   }
 }
