@@ -6,16 +6,15 @@ import {
     longTermTQQQChartFileName,
     longTermWheatChartFileName, NQV4ChartFileName,
     qldChartFileName, rotationChartFileName, sp500ChartFileName
-} from "./Constants";
+} from "./Constants.js";
 import {log} from 'wechaty'
-import {WechatyInterface} from "wechaty/dist/esm/src/wechaty/wechaty-impl";
 import {
     daytradev2ToAllRooms, daytradev3ToAllRooms,
     daytradev4ToAllRooms, daytradev5ToAllRooms, longtermiwmToAllRooms,
     longtermtqqqToAllRooms,
     longtermwheatToAllRooms, nqv4ToAllRooms,
     qldToAllRooms, rotationToAllRooms, sp500ToAllRooms
-} from "./MessageService";
+} from "./MessageService.js";
 
 //是否成功启动
 let isInit = false;
@@ -71,7 +70,7 @@ export function initRefreshFiles() {
     log.info("Init refresh files end.");
 }
 
-export async function refreshFiles(bot: WechatyInterface) {
+export async function refreshFiles(bot) {
     //小麦 长期交易策略
     var newStats = null;
 

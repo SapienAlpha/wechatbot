@@ -1,7 +1,7 @@
-import {log, Message} from "wechaty";
+import {log} from "wechaty";
 import {
     disclaimer,
-} from "./Constants";
+} from "./Constants.js";
 import {
     dayTradeV2Chart,
     dayTradeV3Chart,
@@ -9,11 +9,9 @@ import {
     longTermTQQQChart,
     longTermWheatChart, NQV4Chart,
     qldChart, rotationChart, sp500Chart
-} from "./ChartFileService";
-import {RoomInterface} from "wechaty/src/user-modules/room";
-import {FileBox} from "file-box";
+} from "./ChartFileService.js";
 
-export default async function onMessage(msg: Message) {
+export default async function onMessage(msg) {
     log.info('Receive message: ', msg.toString());
 
     var command = msg.text().toLowerCase().replace(/\s*/g, "");
@@ -182,7 +180,7 @@ export async function sp500ToAllRooms(bot) {
 }
 
 
-async function sendMsgToAllRooms(bot, note, chart: FileBox) {
+async function sendMsgToAllRooms(bot, note, chart) {
     if (bot !== null && bot.isLoggedIn) {
         const roomList = await bot.Room.findAll();
         for (const room of roomList) {
@@ -194,7 +192,7 @@ async function sendMsgToAllRooms(bot, note, chart: FileBox) {
     }
 }
 
-async function sendMsgToRoom(room: RoomInterface, note, chart: FileBox) {
+async function sendMsgToRoom(room, note, chart) {
     await room.say(note);
     await room.say(chart)
 }

@@ -5,20 +5,14 @@
  */
 // https://stackoverflow.com/a/42817956/1123955
 // https://github.com/motdotla/dotenv/issues/89#issuecomment-587753552
-import 'dotenv/config.js'
 
-import {
-    Contact,
-    ScanStatus,
-    WechatyBuilder,
-    log,
-} from 'wechaty'
+import {ScanStatus, WechatyBuilder, log} from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
-import onMessage from "./MessageService";
-import {initRefreshFiles, refreshFiles} from "./ChartFileService";
+import onMessage from "./MessageService.js";
+import {initRefreshFiles, refreshFiles} from "./ChartFileService.js";
 
-function onScan(qrcode: string, status: ScanStatus) {
+function onScan(qrcode, status) {
     if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
         const qrcodeImageUrl = [
             'https://wechaty.js.org/qrcode/',
@@ -33,11 +27,11 @@ function onScan(qrcode: string, status: ScanStatus) {
     }
 }
 
-function onLogin(user: Contact) {
+function onLogin(user) {
     log.info('StarterBot', '%s login', user)
 }
 
-function onLogout(user: Contact) {
+function onLogout(user) {
     log.info('StarterBot', '%s logout', user)
 }
 
