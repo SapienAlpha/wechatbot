@@ -4,3 +4,4 @@ SapienAlphaWechatBot.memory-card.json
 dist
 .DS_Store
 SapienAlphaBot.memory-card.json
+source/wechatBotNotifyStatus.txt

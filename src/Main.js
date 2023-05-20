@@ -10,7 +10,11 @@ import {ScanStatus, WechatyBuilder, log} from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
 import onMessage from "./MessageService.js";
-import {initRefreshFiles, refreshFiles} from "./ChartFileService.js";
+import {refreshFiles} from "./ChartFileService.js";
+
+import * as dotenv from 'dotenv'
+
+dotenv.config({path: `.env.${process.env.NODE_ENV}`})
 
 function onScan(qrcode, status) {
     if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
@@ -35,8 +39,6 @@ function onLogout(user) {
     log.info('StarterBot', '%s logout', user)
 }
 
-//启动前加载文件
-initRefreshFiles();
 
 const bot = WechatyBuilder.build({
     name: 'SapienAlphaBot',
@@ -78,4 +80,4 @@ bot.start()
 // 10s 检查一次文件更新情况
 setInterval(function () {
     refreshFiles(bot);
-}, 10000)
+}, 60000)

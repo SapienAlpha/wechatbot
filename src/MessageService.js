@@ -1,15 +1,7 @@
 import {log} from "wechaty";
-import {
-    disclaimer,
-} from "./Constants.js";
-import {
-    dayTradeV2Chart,
-    dayTradeV3Chart,
-    dayTradeV4Chart, dayTradeV5Chart, longTermIWMChart,
-    longTermTQQQChart,
-    longTermWheatChart, NQV4Chart,
-    qldChart, rotationChart, sp500Chart
-} from "./ChartFileService.js";
+import {FileBox} from "file-box";
+
+export const disclaimer = '策略仅供参考，不构成任何投资建议。请务必阅读免责声明(http://webapp.sapienalpha.net/)';
 
 export default async function onMessage(msg) {
     log.info('Receive message: ', msg.toString());
@@ -36,6 +28,7 @@ export default async function onMessage(msg) {
 
         case '?longtermwheat':
         case '？longtermwheat':
+            let longTermWheatChart = FileBox.fromFile(process.env.longTermWheatChartFileName);
             await msg.say('下图是 小麦 长期交易策略。\n' +
                 disclaimer)
             await msg.say(longTermWheatChart)
@@ -43,6 +36,7 @@ export default async function onMessage(msg) {
 
         case '?longtermtqqq':
         case '？longtermtqqq':
+            let longTermTQQQChart = FileBox.fromFile(process.env.longTermTQQQChartFileName);
             await msg.say('下图是 TQQQ 长期交易策略。\n' +
                 disclaimer)
             await msg.say(longTermTQQQChart)
@@ -50,6 +44,7 @@ export default async function onMessage(msg) {
 
         case '?qld':
         case '？qld':
+            let qldChart = FileBox.fromFile(process.env.qldChartFileName);
             await msg.say('下图是 2倍做多纳指100ETF(QLD) 短期交易策略。\n' +
                 disclaimer)
             await msg.say(qldChart)
@@ -57,6 +52,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev2':
         case '？daytradev2':
+            let dayTradeV2Chart = FileBox.fromFile(process.env.dayTradeV2ChartFileName);
             await msg.say('下图是 纳指100 日内交易策略(V2)。\n' +
                 disclaimer)
             await msg.say(dayTradeV2Chart)
@@ -64,6 +60,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev3':
         case '？daytradev3':
+            let dayTradeV3Chart = FileBox.fromFile(process.env.dayTradeV3ChartFileName);
             await msg.say('下图是 纳指100 日内交易策略(V3)。\n' +
                 disclaimer)
             await msg.say(dayTradeV3Chart)
@@ -71,6 +68,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev4':
         case '？daytradev4':
+            let dayTradeV4Chart = FileBox.fromFile(process.env.dayTradeV4ChartFileName);
             await msg.say('下图是 纳指100 日内交易策略(V4)。\n' +
                 disclaimer)
             await msg.say(dayTradeV4Chart)
@@ -78,6 +76,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev5':
         case '？daytradev5':
+            let dayTradeV5Chart = FileBox.fromFile(process.env.dayTradeV5ChartFileName);
             await msg.say('下图是 纳指100 日内交易策略(V5)。\n' +
                 disclaimer)
             await msg.say(dayTradeV5Chart)
@@ -85,6 +84,7 @@ export default async function onMessage(msg) {
 
         case '?rotation':
         case '？rotation':
+            let rotationChart = FileBox.fromFile(process.env.rotationChartFileName);
             await msg.say('下图是 QQQ 与 IWM 间风格轮动策略。\n' +
                 disclaimer)
             await msg.say(rotationChart)
@@ -92,6 +92,7 @@ export default async function onMessage(msg) {
 
         case '?longtermiwm':
         case '？longtermiwm':
+            let longTermIWMChart = FileBox.fromFile(process.env.longTermIWMChartFileName);
             await msg.say('下图是 IWM 长期交易策略。\n' +
                 disclaimer)
             await msg.say(longTermIWMChart)
@@ -99,6 +100,7 @@ export default async function onMessage(msg) {
 
         case '?nqv4':
         case '？nqv4':
+            let NQV4Chart = FileBox.fromFile(process.env.NQV4ChartFileName);
             await msg.say('下图是 纳指100 日内交易策略。\n' +
                 disclaimer)
             await msg.say(NQV4Chart)
@@ -106,93 +108,10 @@ export default async function onMessage(msg) {
 
         case '?sp500':
         case '？sp500':
+            let sp500Chart = FileBox.fromFile(process.env.sp500ChartFileName);
             await msg.say('下图是 标普500 日内交易策略。\n' +
                 disclaimer)
             await msg.say(sp500Chart)
             break
     }
-}
-
-export async function longtermwheatToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 小麦 长期交易策略。\n' + disclaimer,
-        longTermWheatChart)
-}
-
-export async function longtermtqqqToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 TQQQ 长期交易策略。\n' + disclaimer,
-        longTermTQQQChart)
-}
-
-export async function qldToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 2倍做多纳指100ETF(QLD) 短期交易策略。\n' + disclaimer,
-        qldChart)
-}
-
-export async function daytradev2ToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 纳指100 日内交易策略(V2)。\n' + disclaimer,
-        dayTradeV2Chart)
-}
-
-export async function daytradev3ToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 纳指100 日内交易策略(V3)。\n' + disclaimer,
-        dayTradeV3Chart)
-}
-
-export async function daytradev4ToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 纳指100 日内交易策略(V4)。\n' + disclaimer,
-        dayTradeV4Chart)
-}
-
-export async function daytradev5ToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 纳指100 日内交易策略(V5)。\n' + disclaimer,
-        dayTradeV5Chart)
-}
-
-export async function rotationToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 QQQ 与 IWM 间风格轮动策略。\n' + disclaimer,
-        rotationChart)
-}
-
-export async function longtermiwmToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 IWM 长期交易策略。\n' + disclaimer,
-        longTermIWMChart)
-}
-
-export async function nqv4ToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 纳指100 日内交易策略。\n' + disclaimer,
-        NQV4Chart)
-}
-
-export async function sp500ToAllRooms(bot) {
-    await sendMsgToAllRooms(bot,
-        '下图是 标普500 日内交易策略。\n' + disclaimer,
-        sp500Chart)
-}
-
-
-async function sendMsgToAllRooms(bot, note, chart) {
-    if (bot !== null && bot.isLoggedIn) {
-        const roomList = await bot.Room.findAll();
-        for (const room of roomList) {
-            var name = room.payload.topic;
-            if (name.startsWith("SapienAlpha")) {
-                await sendMsgToRoom(room, note, chart)
-            }
-        }
-    }
-}
-
-async function sendMsgToRoom(room, note, chart) {
-    await room.say(note);
-    await room.say(chart)
 }

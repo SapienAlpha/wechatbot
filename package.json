@@ -5,8 +5,8 @@
   "main": "src/Main.js",
   "type": "module",
   "scripts": {
-    "start:local": "cross-env WECHATY_LOG=verbose WECHATY_PUPPET=wechaty-puppet-wechat node src/Main.js",
-    "start:prod": "cross-env WECHATY_LOG=verbose WECHATY_PUPPET=wechaty-puppet-wechat node src/Main.js"
+    "start:local": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.local",
+    "start:prod": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.prod"
   },
   "keywords": [],
   "author": "",
