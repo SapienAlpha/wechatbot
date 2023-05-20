@@ -220,7 +220,8 @@ async function sendMsgToAllRooms(bot, note, chart) {
         const roomList = await bot.Room.findAll();
         for (const room of roomList) {
             var name = room.payload.topic;
-            if (name.startsWith("SapienAlpha客服群")) {
+            if (name.startsWith("SapienAlpha客服群")
+                || name === "SapienAlpha技术部") {
                 await sendMsgToRoomWithRetry(room, note);
                 await sendMsgToRoomWithRetry(room, chart);
             }
