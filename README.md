@@ -1,5 +1,7 @@
 # SapienAlpha Wechat Bot
 
+## prod路径：C:\\wechatbot\\wechatbot
+
 ## 一、编译&运行
 0. 安装 Node.jS (>=10)
 1. clone 代码
@@ -11,16 +13,15 @@ cd wechatbot
 ```text
 npm install
 ```
-3. 执行编译
-注意，需要修改读取文件的路径
+3. 运行
 ```text
-npm run build
+./run.sh
 ```
-编译生成的文件在dist目录内。
-4. 运行
-执行dist内生成的Main.js；win上部署命令应该还需要优化
-```shell
-node ./dist/src/Main.js
+4. 停止
+```text
+ps -ef|grep node
+找到Main.js的进程
+kill -9 进程号
 ```
 
 运行成功后，你可以看到下面的界面：
