@@ -18,11 +18,19 @@ npm install
 ./run.sh
 ```
 4. 停止
-```text
-ps -ef|grep node
-找到Main.js的进程
-kill -9 进程号
-```
+   1. windows server上停止任务
+    ```text
+    cmd中执行命令查找进程id
+   tasklist /v
+   杀死进程
+   taskkill pid -f
+    ```
+   2. linux server上停止任务
+    ```text
+    ps -ef|grep node
+    找到Main.js的进程
+    kill -9 进程号
+    ```
 
 运行成功后，你可以看到下面的界面：
 ![img.png](source/onScan.png)
