@@ -78,6 +78,6 @@ bot.start()
     .catch(e => log.error('SapienAlphaBot', e))
 
 // 10s 检查一次文件更新情况
-// setInterval(function () {
-//     refreshFiles(bot);
-// }, 60000)
+setInterval(function () {
+    refreshFiles(bot);
+}, 5*60*1000)

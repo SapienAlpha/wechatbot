@@ -5,3 +5,4 @@ dist
 .DS_Store
 SapienAlphaBot.memory-card.json
 source/wechatBotNotifyStatus.txt
+source/wechatBotNotifyStatus_V2.txt
