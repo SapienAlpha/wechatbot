@@ -1,5 +1,6 @@
 import {log} from "wechaty";
 import {FileBox} from "file-box";
+import * as path from 'path';
 
 export const disclaimer = '策略仅供参考，不构成任何投资建议。请务必阅读免责声明(http://webapp.sapienalpha.net/)';
 
@@ -28,7 +29,7 @@ export default async function onMessage(msg) {
 
         case '?longtermwheat':
         case '？longtermwheat':
-            let longTermWheatChart = FileBox.fromFile(process.env.longTermWheatChartFileName);
+            let longTermWheatChart = FileBox.fromFile(path.join(process.env.basePath,"longtermwheat.png"));
             await msg.say('下图是 小麦 长期交易策略。\n' +
                 disclaimer)
             await msg.say(longTermWheatChart)
@@ -36,7 +37,7 @@ export default async function onMessage(msg) {
 
         case '?longtermtqqq':
         case '？longtermtqqq':
-            let longTermTQQQChart = FileBox.fromFile(process.env.longTermTQQQChartFileName);
+            let longTermTQQQChart = FileBox.fromFile(path.join(process.env.basePath,"longtermtqqq.png"));
             await msg.say('下图是 TQQQ 长期交易策略。\n' +
                 disclaimer)
             await msg.say(longTermTQQQChart)
@@ -44,7 +45,7 @@ export default async function onMessage(msg) {
 
         case '?qld':
         case '？qld':
-            let qldChart = FileBox.fromFile(process.env.qldChartFileName);
+            let qldChart = FileBox.fromFile(path.join(process.env.basePath,"qld.png"));
             await msg.say('下图是 2倍做多纳指100ETF(QLD) 短期交易策略。\n' +
                 disclaimer)
             await msg.say(qldChart)
@@ -52,7 +53,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev2':
         case '？daytradev2':
-            let dayTradeV2Chart = FileBox.fromFile(process.env.dayTradeV2ChartFileName);
+            let dayTradeV2Chart = FileBox.fromFile(path.join(process.env.basePath,"daytradev2.png"));
             await msg.say('下图是 纳指100 日内交易策略(V2)。\n' +
                 disclaimer)
             await msg.say(dayTradeV2Chart)
@@ -60,7 +61,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev3':
         case '？daytradev3':
-            let dayTradeV3Chart = FileBox.fromFile(process.env.dayTradeV3ChartFileName);
+            let dayTradeV3Chart = FileBox.fromFile(path.join(process.env.basePath,"daytradev3.png"));
             await msg.say('下图是 纳指100 日内交易策略(V3)。\n' +
                 disclaimer)
             await msg.say(dayTradeV3Chart)
@@ -68,7 +69,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev4':
         case '？daytradev4':
-            let dayTradeV4Chart = FileBox.fromFile(process.env.dayTradeV4ChartFileName);
+            let dayTradeV4Chart = FileBox.fromFile(path.join(process.env.basePath,"daytradev4.png"));
             await msg.say('下图是 纳指100 日内交易策略(V4)。\n' +
                 disclaimer)
             await msg.say(dayTradeV4Chart)
@@ -76,7 +77,7 @@ export default async function onMessage(msg) {
 
         case '?daytradev5':
         case '？daytradev5':
-            let dayTradeV5Chart = FileBox.fromFile(process.env.dayTradeV5ChartFileName);
+            let dayTradeV5Chart = FileBox.fromFile(path.join(process.env.basePath,"daytradev5.png"));
             await msg.say('下图是 纳指100 日内交易策略(V5)。\n' +
                 disclaimer)
             await msg.say(dayTradeV5Chart)
@@ -84,7 +85,7 @@ export default async function onMessage(msg) {
 
         case '?rotation':
         case '？rotation':
-            let rotationChart = FileBox.fromFile(process.env.rotationChartFileName);
+            let rotationChart = FileBox.fromFile(path.join(process.env.basePath,"rotation.png"));
             await msg.say('下图是 QQQ 与 IWM 间风格轮动策略。\n' +
                 disclaimer)
             await msg.say(rotationChart)
@@ -92,7 +93,7 @@ export default async function onMessage(msg) {
 
         case '?longtermiwm':
         case '？longtermiwm':
-            let longTermIWMChart = FileBox.fromFile(process.env.longTermIWMChartFileName);
+            let longTermIWMChart = FileBox.fromFile(path.join(process.env.basePath,"longtermiwm.png"));
             await msg.say('下图是 IWM 长期交易策略。\n' +
                 disclaimer)
             await msg.say(longTermIWMChart)
@@ -100,7 +101,7 @@ export default async function onMessage(msg) {
 
         case '?nqv4':
         case '？nqv4':
-            let NQV4Chart = FileBox.fromFile(process.env.NQV4ChartFileName);
+            let NQV4Chart = FileBox.fromFile(path.join(process.env.basePath,"nqv4.png"));
             await msg.say('下图是 纳指100 日内交易策略。\n' +
                 disclaimer)
             await msg.say(NQV4Chart)
@@ -108,7 +109,7 @@ export default async function onMessage(msg) {
 
         case '?sp500':
         case '？sp500':
-            let sp500Chart = FileBox.fromFile(process.env.sp500ChartFileName);
+            let sp500Chart = FileBox.fromFile(path.join(process.env.basePath,"sp500.png"));
             await msg.say('下图是 标普500 日内交易策略。\n' +
                 disclaimer)
             await msg.say(sp500Chart)

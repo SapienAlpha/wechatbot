@@ -2,220 +2,128 @@ import {FileBox} from 'file-box';
 import * as fs from 'fs';
 import {log} from 'wechaty'
 import {disclaimer} from "./MessageService.js";
+import path from "path";
+import os from 'os';
+
+let roomList = [];
 
 export async function refreshFiles(bot) {
-    if (!fs.existsSync(process.env.notifyStatusFileName)) {
-        initNotifyStatusFile();
-    } else {
-        var newStats = null;
-        var needSaveNotifyStatus = false;
+    try {
+        if (!fs.existsSync(process.env.roomListFileName)) {
+            fs.writeFileSync(process.env.roomListFileName, "")
+        }
+        var roomListStr = fs.readFileSync(process.env.roomListFileName, "utf-8");
+        roomList = roomListStr.split(",");
 
-        var jsonStr = fs.readFileSync(process.env.notifyStatusFileName, "utf-8");
-        var jsonObj = JSON.parse(jsonStr.toString());
-
-        let longTermWheatChartNotifyTs = jsonObj['longTermWheatChartNotifyTs'];
-        newStats = fs.statSync(process.env.longTermWheatChartFileName);
-        if (newStats.mtimeMs > longTermWheatChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let longTermWheatChart = FileBox.fromFile(process.env.longTermWheatChartFileName);
-
-            log.info("--------------------longTermWheatChart has updte, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 小麦 长期交易策略。\n' + disclaimer,
-                longTermWheatChart)
-            longTermWheatChartNotifyTs = newStats.mtimeMs;
+        if (!fs.existsSync(process.env.notifyStatusFileName)) {
+            //第一次部署，无需通知
+            initNotifyStatusFile();
+            return;
         }
 
-
-        let longTermTQQQChartNotifyTs = jsonObj['longTermTQQQChartNotifyTs'];
-        newStats = fs.statSync(process.env.longTermTQQQChartFileName);
-        if (newStats.mtimeMs > longTermTQQQChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let longTermTQQQChart = FileBox.fromFile(process.env.longTermTQQQChartFileName);
-
-            log.info("--------------------longTermTQQQChart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 TQQQ 长期交易策略。\n' + disclaimer,
-                longTermTQQQChart)
-            longTermTQQQChartNotifyTs = newStats.mtimeMs;
+        if (bot === null || !bot.isLoggedIn) {
+            //bot为空，或未登录，无法发送通知
+            log.error("bot is null or not loggedIn.")
+            return;
         }
 
-        let qldChartNotifyTs = jsonObj['qldChartNotifyTs'];
-        newStats = fs.statSync(process.env.qldChartFileName);
-        if (newStats.mtimeMs > qldChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let qldChart = FileBox.fromFile(process.env.qldChartFileName);
+        var allStatus = fs.readFileSync(process.env.notifyStatusFileName, "utf-8");
+        var lines = allStatus.split(os.EOL);
+        let longtermspy_sentStatus = lines[1].split(",")[2]
+        let NQV4_sentStatus = lines[2].split(",")[2]
+        let sp500_sentStatus = lines[3].split(",")[2]
+        let shorttermnq_sentStatus = lines[4].split(",")[2]
+        let daytradev5_sentStatus = lines[5].split(",")[2]
 
-            log.info("--------------------qldChart has update, send message");
+        let longtermspy_currentStatus = fs.readFileSync(path.join(process.env.basePath, "SPY_status.txt"), "utf-8").trim();
+        let NQV4_currentStatus = fs.readFileSync(path.join(process.env.basePath, "NQ-QLDV4_status.txt"), "utf-8").trim();
+        let sp500_currentStatus = fs.readFileSync(path.join(process.env.basePath, "QLD_SP500V2_status.txt"), "utf-8").trim();
+        let shorttermnq_currentStatus = fs.readFileSync(path.join(process.env.basePath, "NQ-composite_status.txt"), "utf-8").trim();
+        let daytradev5_currentStatus = fs.readFileSync(path.join(process.env.basePath, "NQ_daytradev5_status.txt"), "utf-8").trim();
+
+        if (longtermspy_sentStatus !== longtermspy_currentStatus) {
+            let longtermspyChart = FileBox.fromFile(path.join(process.env.basePath, "longtermspy.png"));
             await sendMsgToAllRooms(bot,
-                '下图是 2倍做多纳指100ETF(QLD) 短期交易策略。\n' + disclaimer,
-                qldChart)
-            qldChartNotifyTs = newStats.mtimeMs;
+                '下图是 标普500 长期交易策略。\n' + disclaimer,
+                longtermspyChart)
         }
 
-        let dayTradeV2ChartNotifyTs = jsonObj['dayTradeV2ChartNotifyTs'];
-        newStats = fs.statSync(process.env.dayTradeV2ChartFileName);
-        if (newStats.mtimeMs > dayTradeV2ChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let dayTradeV2Chart = FileBox.fromFile(process.env.dayTradeV2ChartFileName);
-
-            log.info("--------------------dayTradeV2Chart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 纳指100 日内交易策略(V2)。\n' + disclaimer,
-                dayTradeV2Chart)
-            dayTradeV2ChartNotifyTs = newStats.mtimeMs;
-        }
-
-        let dayTradeV3ChartNotifyTs = jsonObj['dayTradeV3ChartNotifyTs'];
-        newStats = fs.statSync(process.env.dayTradeV3ChartFileName);
-        if (newStats.mtimeMs > dayTradeV3ChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let dayTradeV3Chart = FileBox.fromFile(process.env.dayTradeV3ChartFileName);
-
-            log.info("--------------------dayTradeV3Chart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 纳指100 日内交易策略(V3)。\n' + disclaimer,
-                dayTradeV3Chart)
-            dayTradeV3ChartNotifyTs = newStats.mtimeMs;
-        }
-
-        let dayTradeV4ChartNotifyTs = jsonObj['dayTradeV4ChartNotifyTs'];
-        newStats = fs.statSync(process.env.dayTradeV4ChartFileName);
-        if (newStats.mtimeMs > dayTradeV4ChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let dayTradeV4Chart = FileBox.fromFile(process.env.dayTradeV4ChartFileName);
-
-            log.info("--------------------dayTradeV4Chart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 纳指100 日内交易策略(V4)。\n' + disclaimer,
-                dayTradeV4Chart)
-            dayTradeV4ChartNotifyTs = newStats.mtimeMs;
-        }
-
-        let dayTradeV5ChartNotifyTs = jsonObj['dayTradeV5ChartNotifyTs'];
-        newStats = fs.statSync(process.env.dayTradeV5ChartFileName);
-        if (newStats.mtimeMs > dayTradeV5ChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let dayTradeV5Chart = FileBox.fromFile(process.env.dayTradeV5ChartFileName);
-
-            log.info("--------------------dayTradeV5Chart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 纳指100 日内交易策略(V5)。\n' + disclaimer,
-                dayTradeV5Chart)
-            dayTradeV5ChartNotifyTs = newStats.mtimeMs;
-        }
-
-        let rotationChartNotifyTs = jsonObj['rotationChartNotifyTs'];
-        newStats = fs.statSync(process.env.rotationChartFileName);
-        if (newStats.mtimeMs > rotationChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let rotationChart = FileBox.fromFile(process.env.rotationChartFileName);
-
-            log.info("--------------------rotationChart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 QQQ 与 IWM 间风格轮动策略。\n' + disclaimer,
-                rotationChart)
-            rotationChartNotifyTs = newStats.mtimeMs;
-        }
-
-        let longTermIWMChartNotifyTs = jsonObj['longTermIWMChartNotifyTs'];
-        newStats = fs.statSync(process.env.longTermIWMChartFileName);
-        if (newStats.mtimeMs > longTermIWMChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let longTermIWMChart = FileBox.fromFile(process.env.longTermIWMChartFileName);
-
-            log.info("--------------------longTermIWMChart has update, send message");
-            await sendMsgToAllRooms(bot,
-                '下图是 IWM 长期交易策略。\n' + disclaimer,
-                longTermIWMChart)
-            longTermIWMChartNotifyTs = newStats.mtimeMs;
-        }
-
-        let NQV4ChartNotifyTs = jsonObj['NQV4ChartNotifyTs'];
-        newStats = fs.statSync(process.env.NQV4ChartFileName);
-        if (newStats.mtimeMs > NQV4ChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let NQV4Chart = FileBox.fromFile(process.env.NQV4ChartFileName);
-
-            log.info("--------------------NQV4Chart has update, send message");
+        if (NQV4_sentStatus !== NQV4_currentStatus) {
+            let nqv4Chart = FileBox.fromFile(path.join(process.env.basePath, "nqv4.png"));
             await sendMsgToAllRooms(bot,
                 '下图是 纳指100 日内交易策略。\n' + disclaimer,
-                NQV4Chart)
-            NQV4ChartNotifyTs = newStats.mtimeMs;
+                nqv4Chart)
         }
 
-        let sp500ChartNotifyTs = jsonObj['sp500ChartNotifyTs'];
-        newStats = fs.statSync(process.env.sp500ChartFileName);
-        if (newStats.mtimeMs > sp500ChartNotifyTs) {
-            needSaveNotifyStatus = true;
-            let sp500Chart = FileBox.fromFile(process.env.sp500ChartFileName);
-
-            log.info("--------------------sp500Chart has update, send message");
+        if (sp500_sentStatus !== sp500_currentStatus) {
+            let sp500Chart = FileBox.fromFile(path.join(process.env.basePath, "sp500.png"));
             await sendMsgToAllRooms(bot,
                 '下图是 标普500 日内交易策略。\n' + disclaimer,
                 sp500Chart)
-            sp500ChartNotifyTs = newStats.mtimeMs;
         }
 
-        if (needSaveNotifyStatus) {
-            try {
-                const jsonObj = {
-                    'longTermWheatChartNotifyTs': longTermWheatChartNotifyTs,
-                    'longTermTQQQChartNotifyTs': longTermTQQQChartNotifyTs,
-                    'qldChartNotifyTs': qldChartNotifyTs,
-                    'dayTradeV2ChartNotifyTs': dayTradeV2ChartNotifyTs,
-                    'dayTradeV3ChartNotifyTs': dayTradeV3ChartNotifyTs,
-                    'dayTradeV4ChartNotifyTs': dayTradeV4ChartNotifyTs,
-                    'dayTradeV5ChartNotifyTs': dayTradeV5ChartNotifyTs,
-                    'rotationChartNotifyTs': rotationChartNotifyTs,
-                    'longTermIWMChartNotifyTs': longTermIWMChartNotifyTs,
-                    'NQV4ChartNotifyTs': NQV4ChartNotifyTs,
-                    'sp500ChartNotifyTs': sp500ChartNotifyTs
-                }
-                var jsonStr = JSON.stringify(jsonObj, null, 4);
-                fs.writeFileSync(process.env.notifyStatusFileName, jsonStr)
-            } catch (error) {
-                log.error("save notify status file error", error)
-            }
+        if (shorttermnq_sentStatus !== shorttermnq_currentStatus) {
+            let shorttermnqChart = FileBox.fromFile(path.join(process.env.basePath, "shorttermnq.png"));
+            await sendMsgToAllRooms(bot,
+                '下图是 纳指 短期交易策略。\n' + disclaimer,
+                shorttermnqChart)
         }
+
+        if (daytradev5_sentStatus !== daytradev5_currentStatus) {
+            let daytradev5Chart = FileBox.fromFile(path.join(process.env.basePath, "daytradev5.png"));
+            await sendMsgToAllRooms(bot,
+                '下图是 纳指100 日内交易策略(V5)。\n' + disclaimer,
+                daytradev5Chart)
+        }
+
+        var content = "signal_id,filename,sent" + os.EOL
+            + "longtermspy,SPY_status.txt," + longtermspy_currentStatus + os.EOL
+            + "NQV4,QLDV4_status.txt," + NQV4_currentStatus + os.EOL
+            + "sp500,QLD_SP500V2_status.txt," + sp500_currentStatus + os.EOL
+            + "shorttermnq,NQ-composite_status.txt," + shorttermnq_currentStatus + os.EOL
+            + "daytradev5,NQ_daytradev5_status.txt," + daytradev5_currentStatus;
+
+        fs.writeFileSync(process.env.notifyStatusFileName, content)
+
+    } catch (error) {
+        log.error("refresh files error")
+        log.error(error)
     }
 }
 
 function initNotifyStatusFile() {
     try {
-        let longTermWheatChartNotifyTs = fs.statSync(process.env.longTermWheatChartFileName).mtimeMs
-        let longTermTQQQChartNotifyTs = fs.statSync(process.env.longTermTQQQChartFileName).mtimeMs;
-        let qldChartNotifyTs = fs.statSync(process.env.qldChartFileName).mtimeMs;
-        let dayTradeV2ChartNotifyTs = fs.statSync(process.env.dayTradeV2ChartFileName).mtimeMs;
-        let dayTradeV3ChartNotifyTs = fs.statSync(process.env.dayTradeV3ChartFileName).mtimeMs;
-        let dayTradeV4ChartNotifyTs = fs.statSync(process.env.dayTradeV4ChartFileName).mtimeMs;
-        let dayTradeV5ChartNotifyTs = fs.statSync(process.env.dayTradeV5ChartFileName).mtimeMs;
-        let rotationChartNotifyTs = fs.statSync(process.env.rotationChartFileName).mtimeMs;
-        let longTermIWMChartNotifyTs = fs.statSync(process.env.longTermIWMChartFileName).mtimeMs;
-        let NQV4ChartNotifyTs = fs.statSync(process.env.NQV4ChartFileName).mtimeMs;
-        let sp500ChartNotifyTs = fs.statSync(process.env.sp500ChartFileName).mtimeMs;
+        let longtermspy_currentStatus = fs.readFileSync(path.join(process.env.basePath, "SPY_status.txt"), "utf-8").trim();
+        let NQV4_currentStatus = fs.readFileSync(path.join(process.env.basePath, "NQ-QLDV4_status.txt"), "utf-8").trim();
+        let sp500_currentStatus = fs.readFileSync(path.join(process.env.basePath, "QLD_SP500V2_status.txt"), "utf-8").trim();
+        let shorttermnq_currentStatus = fs.readFileSync(path.join(process.env.basePath, "NQ-composite_status.txt"), "utf-8").trim();
+        let daytradev5_currentStatus = fs.readFileSync(path.join(process.env.basePath, "NQ_daytradev5_status.txt"), "utf-8").trim();
 
-        const jsonObj = {
-            'longTermWheatChartNotifyTs': longTermWheatChartNotifyTs,
-            'longTermTQQQChartNotifyTs': longTermTQQQChartNotifyTs,
-            'qldChartNotifyTs': qldChartNotifyTs,
-            'dayTradeV2ChartNotifyTs': dayTradeV2ChartNotifyTs,
-            'dayTradeV3ChartNotifyTs': dayTradeV3ChartNotifyTs,
-            'dayTradeV4ChartNotifyTs': dayTradeV4ChartNotifyTs,
-            'dayTradeV5ChartNotifyTs': dayTradeV5ChartNotifyTs,
-            'rotationChartNotifyTs': rotationChartNotifyTs,
-            'longTermIWMChartNotifyTs': longTermIWMChartNotifyTs,
-            'NQV4ChartNotifyTs': NQV4ChartNotifyTs,
-            'sp500ChartNotifyTs': sp500ChartNotifyTs
-        }
-        var jsonStr = JSON.stringify(jsonObj, null, 4);
-        fs.writeFileSync(process.env.notifyStatusFileName, jsonStr)
+        var content = "signal_id,filename,sent" + os.EOL
+            + "longtermspy,SPY_status.txt," + longtermspy_currentStatus + os.EOL
+            + "NQV4,QLDV4_status.txt," + NQV4_currentStatus + os.EOL
+            + "sp500,QLD_SP500V2_status.txt," + sp500_currentStatus + os.EOL
+            + "shorttermnq,NQ-composite_status.txt," + shorttermnq_currentStatus + os.EOL
+            + "daytradev5,NQ_daytradev5_status.txt," + daytradev5_currentStatus;
+
+        fs.writeFileSync(process.env.notifyStatusFileName, content)
     } catch (error) {
         log.error("save notify status file error", error)
     }
 }
 
 async function sendMsgToAllRooms(bot, note, chart) {
+    for (const roomName of roomList) {
+        try {
+            var room = await bot.Room.find({topic: roomName});
+            await sendMsgToRoomWithRetry(room, note);
+            await sendMsgToRoomWithRetry(room, chart);
+        } catch (error) {
+            log.error("send msg to room error, room:" + roomName);
+            log.error(error)
+        }
+    }
+
     if (bot !== null && bot.isLoggedIn) {
         const roomList = await bot.Room.findAll();
         for (const room of roomList) {
@@ -235,7 +143,8 @@ async function sendMsgToRoomWithRetry(room, msg) {
             await room.say(msg);
             return;
         } catch (error) {
-            log.error("send msg error, count:", count, error.toString())
+            log.error("send msg error, count:" + count)
+            log.error(error)
         }
     }
 

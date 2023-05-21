@@ -1,6 +1,7 @@
 # SapienAlpha Wechat Bot
 
-## prod路径：C:\\wechatbot\\wechatbot
+### prod路径：C:\wechatbot\wechatbot
+### 微信群列表配置文件：C:\wechatbot\roomList.txt，以英文逗号分割
 
 ## 一、编译&运行
 0. 安装 Node.jS (>=10)
@@ -21,9 +22,9 @@ npm install
    1. windows server上停止任务
     ```text
     cmd中执行命令查找进程id
-   tasklist /v
+   tasklist /v | findstr "npm run start:prod"
    杀死进程
-   taskkill pid -f
+   taskkill /pid {pid}
     ```
    2. linux server上停止任务
     ```text
