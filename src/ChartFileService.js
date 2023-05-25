@@ -27,6 +27,10 @@ export async function refreshFiles(bot) {
             return;
         }
 
+        //send heartbeat
+        var heartbeatRoom = await bot.Room.find({topic: 'SapienAlpha客服群'});
+        await sendMsgToRoomWithRetry(heartbeatRoom, "heartbeat");
+
         var allStatus = fs.readFileSync(process.env.notifyStatusFileName, "utf-8");
         var lines = allStatus.split(os.EOL);
         let longtermspy_sentStatus = lines[1].split(",")[2]
@@ -121,18 +125,6 @@ async function sendMsgToAllRooms(bot, note, chart) {
         } catch (error) {
             log.error("send msg to room error, room:" + roomName);
             log.error(error)
-        }
-    }
-
-    if (bot !== null && bot.isLoggedIn) {
-        const roomList = await bot.Room.findAll();
-        for (const room of roomList) {
-            var name = room.payload.topic;
-            if (name.startsWith("SapienAlpha客服群")
-                || name === "SapienAlpha技术部") {
-                await sendMsgToRoomWithRetry(room, note);
-                await sendMsgToRoomWithRetry(room, chart);
-            }
         }
     }
 }

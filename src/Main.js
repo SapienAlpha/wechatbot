@@ -77,7 +77,7 @@ bot.start()
     .then(() => log.info('SapienAlphaBot', 'SapienAlpha Bot Started.'))
     .catch(e => log.error('SapienAlphaBot', e))
 
-// 10s 检查一次文件更新情况
+//检查文件更新情况
 setInterval(function () {
     refreshFiles(bot);
 }, 5*60*1000)
