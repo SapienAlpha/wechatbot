@@ -13,7 +13,7 @@ export async function refreshFiles() {
         if (!fs.existsSync(process.env.roomListFileName)) {
             fs.writeFileSync(process.env.roomListFileName, "")
         }
-        var roomListStr = fs.readFileSync(process.env.roomListFileName);
+        var roomListStr = fs.readFileSync(process.env.roomListFileName).toString();
         log.info('Room list:' + roomListStr)
         roomList = roomListStr.split(",");
 
