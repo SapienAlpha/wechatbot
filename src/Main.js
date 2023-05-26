@@ -9,7 +9,7 @@
 import {ScanStatus, WechatyBuilder, log} from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
-import onMessage from "./MessageService.js";
+import {onMessage} from "./MessageService.js";
 import {refreshFiles} from "./ChartFileService.js";
 
 import * as dotenv from 'dotenv'
@@ -40,7 +40,7 @@ function onLogout(user) {
 }
 
 
-const bot = WechatyBuilder.build({
+export const bot = WechatyBuilder.build({
     name: 'SapienAlphaBot',
     /**
      * How to set Wechaty Puppet Provider:
@@ -79,5 +79,5 @@ bot.start()
 
 //检查文件更新情况
 setInterval(function () {
-    refreshFiles(bot);
-}, 5*60*1000)
+    refreshFiles();
+}, 5 * 60 * 1000)

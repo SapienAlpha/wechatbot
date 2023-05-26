@@ -1,18 +1,20 @@
 import {FileBox} from 'file-box';
 import * as fs from 'fs';
 import {log} from 'wechaty'
-import {disclaimer} from "./MessageService.js";
 import path from "path";
 import os from 'os';
+import {disclaimer} from "./Constants.js";
+import {bot} from './Main.js';
 
 let roomList = [];
 
-export async function refreshFiles(bot) {
+export async function refreshFiles() {
     try {
         if (!fs.existsSync(process.env.roomListFileName)) {
             fs.writeFileSync(process.env.roomListFileName, "")
         }
-        var roomListStr = fs.readFileSync(process.env.roomListFileName, "utf-8");
+        var roomListStr = fs.readFileSync(process.env.roomListFileName);
+        log.info('Room list:' + roomListStr)
         roomList = roomListStr.split(",");
 
         if (!fs.existsSync(process.env.notifyStatusFileName)) {
