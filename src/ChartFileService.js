@@ -31,7 +31,7 @@ export async function refreshFiles() {
 
         //send heartbeat
         var heartbeatRoom = await bot.Room.find({topic: 'SapienAlpha客服群'});
-        await sendMsgToRoomWithRetry(heartbeatRoom, "heartbeat");
+        await sendMsgToRoomWithRetry(heartbeatRoom, 'SapienAlpha客服群', "heartbeat");
 
         var allStatus = fs.readFileSync(process.env.notifyStatusFileName, "utf-8");
         var lines = allStatus.split(os.EOL);
@@ -122,8 +122,8 @@ async function sendMsgToAllRooms(bot, note, chart) {
     for (const roomName of roomList) {
         try {
             var room = await bot.Room.find({topic: roomName});
-            await sendMsgToRoomWithRetry(room, note);
-            await sendMsgToRoomWithRetry(room, chart);
+            await sendMsgToRoomWithRetry(room, roomName, note);
+            await sendMsgToRoomWithRetry(room, roomName, chart);
         } catch (error) {
             log.error("send msg to room error, room:" + roomName);
             log.error(error)
@@ -131,7 +131,11 @@ async function sendMsgToAllRooms(bot, note, chart) {
     }
 }
 
-async function sendMsgToRoomWithRetry(room, msg) {
+async function sendMsgToRoomWithRetry(room, roomTopic, msg) {
+    if (room === null) {
+        log.error("Room is null, room:" + roomTopic);
+    }
+
     for (let count = 0; count < 3; count++) {
         try {
             await room.say(msg);
