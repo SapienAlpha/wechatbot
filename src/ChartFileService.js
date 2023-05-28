@@ -17,6 +17,18 @@ export async function refreshFiles() {
         log.info('Room list:' + roomListStr)
         roomList = roomListStr.split(",");
 
+        for (const roomName of roomList) {
+            try {
+                var room = await bot.Room.find({topic: roomName});
+                if (room === null) {
+                    log.error("find room fail, roomName:"+roomName);
+                }
+            } catch (error) {
+                log.error("find room error, roomName:" + roomName);
+                log.error(error)
+            }
+        }
+
         if (!fs.existsSync(process.env.notifyStatusFileName)) {
             //第一次部署，无需通知
             initNotifyStatusFile();
