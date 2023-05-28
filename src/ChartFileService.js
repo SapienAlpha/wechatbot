@@ -6,24 +6,25 @@ import os from 'os';
 import {disclaimer} from "./Constants.js";
 import {bot} from './Main.js';
 
-let sendSignalRoomList = [];
+let sendSignalRoomList = ['纳指波段冲麦浪🥖🏄‍♀️', 'SapienAlpha技术部', 'SapienAlpha客服群'];
+let heartbeatRoomList = ['SapienAlpha技术部', 'SapienAlpha客服群'];
 
 export async function refreshFiles() {
     try {
-        if (!fs.existsSync(process.env.sendSignalRoomListFileName)) {
-            fs.writeFileSync(process.env.sendSignalRoomListFileName, "")
-        }
-        if (!fs.existsSync(process.env.heartbeatRoomListFileName)) {
-            fs.writeFileSync(process.env.heartbeatRoomListFileName, "")
-        }
-
-        var sendSignalRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
-        log.info('Send signal room list:' + sendSignalRoomListStr)
-        sendSignalRoomList = sendSignalRoomListStr.split(",");
-
-        var heartbeatRoomListStr = fs.readFileSync(process.env.heartbeatRoomListFileName).toString();
-        log.info('Heartbeat room list:' + heartbeatRoomListStr)
-        var heartbeatRoomList = heartbeatRoomListStr.split(",");
+        // if (!fs.existsSync(process.env.sendSignalRoomListFileName)) {
+        //     fs.writeFileSync(process.env.sendSignalRoomListFileName, "")
+        // }
+        // if (!fs.existsSync(process.env.heartbeatRoomListFileName)) {
+        //     fs.writeFileSync(process.env.heartbeatRoomListFileName, "")
+        // }
+        //
+        // var sendSignalRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
+        // log.info('Send signal room list:' + sendSignalRoomListStr)
+        // sendSignalRoomList = sendSignalRoomListStr.split(",");
+        //
+        // var heartbeatRoomListStr = fs.readFileSync(process.env.heartbeatRoomListFileName).toString();
+        // log.info('Heartbeat room list:' + heartbeatRoomListStr)
+        // heartbeatRoomList = heartbeatRoomListStr.split(",");
 
         if (!fs.existsSync(process.env.notifyStatusFileName)) {
             //第一次部署，无需通知
