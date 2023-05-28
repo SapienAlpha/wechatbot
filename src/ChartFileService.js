@@ -6,28 +6,24 @@ import os from 'os';
 import {disclaimer} from "./Constants.js";
 import {bot} from './Main.js';
 
-let roomList = [];
+let sendSignalRoomList = [];
 
 export async function refreshFiles() {
     try {
-        if (!fs.existsSync(process.env.roomListFileName)) {
-            fs.writeFileSync(process.env.roomListFileName, "")
+        if (!fs.existsSync(process.env.sendSignalRoomListFileName)) {
+            fs.writeFileSync(process.env.sendSignalRoomListFileName, "")
         }
-        var roomListStr = fs.readFileSync(process.env.roomListFileName).toString();
-        log.info('Room list:' + roomListStr)
-        roomList = roomListStr.split(",");
+        if (!fs.existsSync(process.env.heartbeatRoomListFileName)) {
+            fs.writeFileSync(process.env.heartbeatRoomListFileName, "")
+        }
 
-        for (const roomName of roomList) {
-            try {
-                var room = await bot.Room.find({topic: roomName});
-                if (room === null) {
-                    log.error("find room fail, roomName:"+roomName);
-                }
-            } catch (error) {
-                log.error("find room error, roomName:" + roomName);
-                log.error(error)
-            }
-        }
+        var sendSignalRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
+        log.info('Send signal room list:' + sendSignalRoomListStr)
+        sendSignalRoomList = sendSignalRoomListStr.split(",");
+
+        var heartbeatRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
+        log.info('Heartbeat room list:' + heartbeatRoomListStr)
+        var heartbeatRoomList = heartbeatRoomListStr.split(",");
 
         if (!fs.existsSync(process.env.notifyStatusFileName)) {
             //第一次部署，无需通知
@@ -42,8 +38,19 @@ export async function refreshFiles() {
         }
 
         //send heartbeat
-        var heartbeatRoom = await bot.Room.find({topic: 'SapienAlpha客服群'});
-        await sendMsgToRoomWithRetry(heartbeatRoom, 'SapienAlpha客服群', "heartbeat");
+        for (const roomName of heartbeatRoomList) {
+            try {
+                var room = await bot.Room.find({topic: roomName});
+                if (room === null) {
+                    log.error("find heartbeat room fail, roomName:" + roomName);
+                } else {
+                    await sendMsgToRoomWithRetry(room, 'SapienAlpha客服群', "heartbeat");
+                }
+            } catch (error) {
+                log.error("find heartbeat room error, roomName:" + roomName);
+                log.error(error)
+            }
+        }
 
         var allStatus = fs.readFileSync(process.env.notifyStatusFileName, "utf-8");
         var lines = allStatus.split(os.EOL);
@@ -131,7 +138,7 @@ function initNotifyStatusFile() {
 }
 
 async function sendMsgToAllRooms(bot, note, chart) {
-    for (const roomName of roomList) {
+    for (const roomName of sendSignalRoomList) {
         try {
             var room = await bot.Room.find({topic: roomName});
             await sendMsgToRoomWithRetry(room, roomName, note);
