@@ -16,6 +16,9 @@ export async function onMessage(msg) {
         if (msgRoom === null) {
             return;
         }
+        if (msgRoom.payload === null) {
+            log.error("msg room payload is null")
+        }
         var msgTopic = msgRoom.payload.topic;
         log.info("onMessage. msgTopic:" + msgTopic)
         var replyRoom = await bot.Room.find({topic: msgTopic});
@@ -132,6 +135,6 @@ export async function onMessage(msg) {
                 break
         }
     } catch (e) {
-        log.error("onMessage error," + e.toString());
+        log.error("onMessage error, msg:" + msg.toString() + "error:" + e.toString());
     }
 }
