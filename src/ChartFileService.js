@@ -39,6 +39,9 @@ export async function refreshFiles() {
 
         //send heartbeat
         for (const roomName of heartbeatRoomList) {
+            if (roomName === null || roomName === '') {
+                continue;
+            }
             try {
                 var room = await bot.Room.find({topic: roomName});
                 if (room === null) {
