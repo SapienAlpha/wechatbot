@@ -21,7 +21,7 @@ export async function refreshFiles() {
         log.info('Send signal room list:' + sendSignalRoomListStr)
         sendSignalRoomList = sendSignalRoomListStr.split(",");
 
-        var heartbeatRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
+        var heartbeatRoomListStr = fs.readFileSync(process.env.heartbeatRoomListFileName).toString();
         log.info('Heartbeat room list:' + heartbeatRoomListStr)
         var heartbeatRoomList = heartbeatRoomListStr.split(",");
 
