@@ -39,6 +39,10 @@ function onLogout(user) {
     log.info('StarterBot', '%s logout', user)
 }
 
+function onError(error) {
+    log.error("Bot error:" + error)
+}
+
 
 export const bot = WechatyBuilder.build({
     name: 'SapienAlphaBot',
@@ -72,6 +76,7 @@ bot.on('scan', onScan)
 bot.on('login', onLogin)
 bot.on('logout', onLogout)
 bot.on('message', onMessage)
+bot.on('error', onError)
 
 bot.start()
     .then(() => log.info('SapienAlphaBot', 'SapienAlpha Bot Started.'))
