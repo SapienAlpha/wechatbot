@@ -163,6 +163,7 @@ async function sendMsgToRoomWithRetry(room, roomTopic, msg) {
 
     for (let count = 0; count < 3; count++) {
         try {
+            await sleep(1000);
             await room.say(msg);
             return;
         } catch (error) {
@@ -172,3 +173,5 @@ async function sendMsgToRoomWithRetry(room, roomTopic, msg) {
     }
 
 }
+
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
