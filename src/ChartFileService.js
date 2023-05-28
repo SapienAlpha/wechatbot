@@ -142,6 +142,9 @@ function initNotifyStatusFile() {
 
 async function sendMsgToAllRooms(bot, note, chart) {
     for (const roomName of sendSignalRoomList) {
+        if (roomName === null || roomName === '') {
+            continue;
+        }
         try {
             var room = await bot.Room.find({topic: roomName});
             await sendMsgToRoomWithRetry(room, roomName, note);
