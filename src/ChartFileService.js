@@ -7,7 +7,7 @@ import {disclaimer} from "./Constants.js";
 import {bot} from './Main.js';
 
 let sendSignalRoomList = ['纳指波段冲麦浪🥖🏄‍♀️', 'SapienAlpha技术部', 'SapienAlpha客服群'];
-let heartbeatRoomList = ['SapienAlpha技术部', 'SapienAlpha客服群'];
+let heartbeatRoomList = ['SapienAlpha客服群'];
 
 export async function refreshFiles() {
     try {

@@ -59,5 +59,4 @@ npm install
 
 群名不要包含空格、图标之类的
 
-sendSignalRoomList:
-纳指波段冲麦浪🥖🏄‍♀️,SapienAlpha技术部
+群配置在代码中，为什么在代码中：通过配置文件总是出现发送失败的问题
