@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start:local": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.local",
+    "start:aliyun": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.aliyun",
     "start:prod": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.prod"
   },
   "keywords": [],
