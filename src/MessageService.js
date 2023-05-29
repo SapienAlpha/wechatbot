@@ -42,7 +42,8 @@ export async function onMessage(msg) {
                 '?Rotation: 获取最新的 QQQ 与 IWM 间风格轮动策略.\n' +
                 '?Longtermiwm: 获取最新的 IWM 长期交易策略.\n' +
                 '?NQV4: 获取最新的 纳指100 日内交易策略.\n' +
-                '?SP500: 获取最新的 标普500 日内交易策略.'
+                '?SP500: 获取最新的 标普500 日内交易策略.\n' +
+                '?shorttermnq：获取最新的 纳指 短期交易策略.'
             );
         } else if (command === '?longtermwheat' || command === '？longtermwheat'
             || (command.startsWith('@sapienalpha') && command.includes('?longtermwheat'))
@@ -121,6 +122,13 @@ export async function onMessage(msg) {
             await replyRoom.say('下图是 标普500 日内交易策略。\n' +
                 disclaimer)
             await replyRoom.say(sp500Chart)
+        } else if (command === '?shorttermnq' || command === '？shorttermnq'
+            || (command.startsWith('@sapienalpha') && command.includes('?shorttermnq'))
+            || (command.startsWith('@sapienalpha') && command.includes('？shorttermnq'))) {
+            let shorttermnqChart = FileBox.fromFile(path.join(process.env.basePath, "shorttermnq.png"));
+            await replyRoom.say('下图是 纳指 短期交易策略。\n' +
+                disclaimer)
+            await replyRoom.say(shorttermnqChart)
         }
     } catch (e) {
         log.error("onMessage error, msg:" + msg.toString() + "error:" + e.toString());

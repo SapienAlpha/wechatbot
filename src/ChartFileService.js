@@ -9,6 +9,8 @@ import {bot} from './Main.js';
 let sendSignalRoomList = ['纳指波段冲麦浪🥖🏄‍♀️', 'SapienAlpha技术部', 'SapienAlpha客服群'];
 let heartbeatRoomList = ['SapienAlpha客服群'];
 
+let i = 0;
+
 export async function refreshFiles() {
     try {
         // if (!fs.existsSync(process.env.sendSignalRoomListFileName)) {
@@ -48,13 +50,14 @@ export async function refreshFiles() {
                 if (room === null) {
                     log.error("find heartbeat room fail, roomName:" + roomName);
                 } else {
-                    await sendMsgToRoomWithRetry(room, 'SapienAlpha客服群', "heartbeat");
+                    await sendMsgToRoomWithRetry(room, 'SapienAlpha客服群', "heartbeat" + i);
                 }
             } catch (error) {
                 log.error("find heartbeat room error, roomName:" + roomName);
                 log.error(error)
             }
         }
+        i = i + 1;
 
         var allStatus = fs.readFileSync(process.env.notifyStatusFileName, "utf-8");
         var lines = allStatus.split(os.EOL);
