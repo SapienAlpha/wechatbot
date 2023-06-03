@@ -27,7 +27,7 @@ export function loadConfigFileAndRefresh() {
 
     let configStr = '';
     try {
-        configStr = fs.readFileSync(path.join(process.env.basePath, "strategyConfig.txt"), "utf-8");
+        configStr = fs.readFileSync(process.env.strategyConfigFileName, "utf-8");
     } catch (e) {
         log.error(`Load config file error. error:${e.toString()}`);
         configStr = defaultConfigStr;
@@ -59,7 +59,7 @@ export function loadConfigFileAndRefresh() {
         tmpHelpReply = tmpHelpReply + strategyInfo.command + ': 获取最新的' + strategyInfo.explanation + '\n';
     }
     helpReply = tmpHelpReply;
-    strategyMap=tmpStrategyMap;
+    strategyMap = tmpStrategyMap;
 }
 
 class StrategyInfo {
