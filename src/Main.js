@@ -10,9 +10,10 @@ import {ScanStatus, WechatyBuilder, log} from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
 import {onMessage} from "./MessageService.js";
-import {refreshFiles} from "./ChartFileService.js";
 
 import * as dotenv from 'dotenv'
+import {loadConfigFileAndRefresh} from "./ConfigFileService.js";
+import {checkAndNotify, sendHeartbeat} from "./NotifyService.js";
 
 dotenv.config({path: `.env.${process.env.NODE_ENV}`})
 
@@ -43,6 +44,8 @@ function onError(error) {
     log.error("Bot error:" + error)
 }
 
+//init
+loadConfigFileAndRefresh();
 
 export const bot = WechatyBuilder.build({
     name: 'SapienAlphaBot',
@@ -82,7 +85,10 @@ bot.start()
     .then(() => log.info('SapienAlphaBot', 'SapienAlpha Bot Started.'))
     .catch(e => log.error('SapienAlphaBot', e))
 
-//检查文件更新情况
 setInterval(function () {
-    refreshFiles();
+    checkAndNotify();
 }, 5 * 60 * 1000)
+
+setInterval(function () {
+    sendHeartbeat();
+}, 2 * 60 * 60 * 1000)
