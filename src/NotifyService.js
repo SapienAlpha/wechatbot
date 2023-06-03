@@ -5,7 +5,7 @@ import path from "path";
 import os from 'os';
 import {disclaimer} from "./Constants.js";
 import {bot} from './Main.js';
-import {strategyMap} from "./ConfigFileService.js";
+import {loadConfigFileAndRefresh, strategyMap} from "./ConfigFileService.js";
 
 let sendSignalRoomList = ['纳指波段冲麦浪🥖🏄‍♀️', 'SapienAlpha技术部', 'SapienAlpha客服群'];
 let heartbeatRoomList = ['SapienAlpha客服群'];
@@ -28,6 +28,8 @@ export async function checkAndNotify() {
         // var heartbeatRoomListStr = fs.readFileSync(process.env.heartbeatRoomListFileName).toString();
         // log.info('Heartbeat room list:' + heartbeatRoomListStr)
         // heartbeatRoomList = heartbeatRoomListStr.split(",");
+
+        loadConfigFileAndRefresh();
 
         if (!fs.existsSync(process.env.notifyStatusFileName)) {
             fs.writeFileSync(process.env.notifyStatusFileName, '');
