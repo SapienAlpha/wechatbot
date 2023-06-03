@@ -33,6 +33,7 @@ export function loadConfigFileAndRefresh() {
         configStr = defaultConfigStr;
     }
 
+    let tmpStrategyMap = new Map();
     let lines = configStr.split(os.EOL);
     for (let iLine = 0; iLine < lines.length; iLine++) {
         if (iLine === 0) {
@@ -54,10 +55,11 @@ export function loadConfigFileAndRefresh() {
             splitArr[3].replace(/\s*/g, ""),
             Boolean(splitArr[4].replace(/\s*/g, ""))
         );
-        strategyMap.set(strategyInfo.command, strategyInfo);
+        tmpStrategyMap.set(strategyInfo.command, strategyInfo);
         tmpHelpReply = tmpHelpReply + strategyInfo.command + ': 获取最新的' + strategyInfo.explanation + '\n';
     }
     helpReply = tmpHelpReply;
+    strategyMap=tmpStrategyMap;
 }
 
 class StrategyInfo {
