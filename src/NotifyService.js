@@ -55,6 +55,7 @@ export async function checkAndNotify() {
 
             if (notifyStatusMap.get(strategyInfo.command) !== currentStatus) {
                 //status has changed, notify users
+                notifyStatusMap.set(strategyInfo.command, currentStatus);
                 let chart = FileBox.fromFile(path.join(process.env.basePath, strategyInfo.chartFile));
                 await sendMsgToAllRooms(bot,
                     '最新的' + strategyInfo.explanation + '\n' + disclaimer,
@@ -119,10 +120,10 @@ function loadNotifyStatusFile() {
     return notifyStatusMap;
 }
 
-function saveNotifyStatusFile(notifyStatusMap){
-    let content='command,lastSentStatus'+os.EOL;
+function saveNotifyStatusFile(notifyStatusMap) {
+    let content = 'command,lastSentStatus' + os.EOL;
     for (let entry of notifyStatusMap.entries()) {
-        content=content+entry[0]+','+entry[1]+os.EOL;
+        content = content + entry[0] + ',' + entry[1] + os.EOL;
     }
 
     fs.writeFileSync(process.env.notifyStatusFileName, content)
