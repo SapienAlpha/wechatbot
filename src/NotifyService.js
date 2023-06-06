@@ -38,29 +38,34 @@ export async function checkAndNotify() {
         let notifyStatusMap = loadNotifyStatusFile();
 
         for (let strategyInfo of strategyMap.values()) {
-            if (!strategyInfo.enableNotify) {
-                continue;
-            }
-            if (strategyInfo.statusFile === 'null' || strategyInfo.statusFile === null || strategyInfo.statusFile === '') {
-                log.error(`Status file config error, command:${strategyInfo.command}, statusFile:${strategyInfo.statusFile}`);
-                continue;
-            }
+            try {
+                if (!strategyInfo.enableNotify) {
+                    continue;
+                }
+                if (strategyInfo.statusFile === 'null' || strategyInfo.statusFile === null || strategyInfo.statusFile === '') {
+                    log.error(`Status file config error, command:${strategyInfo.command}, statusFile:${strategyInfo.statusFile}`);
+                    continue;
+                }
 
-            let currentStatus = fs.readFileSync(path.join(process.env.basePath, strategyInfo.statusFile), "utf-8").trim();
-            if (!notifyStatusMap.has(strategyInfo.command)) {
-                //new command, first time not notify
-                notifyStatusMap.set(strategyInfo.command, currentStatus);
-                continue;
-            }
+                let currentStatus = fs.readFileSync(path.join(process.env.basePath, strategyInfo.statusFile), "utf-8").trim();
+                if (!notifyStatusMap.has(strategyInfo.command)) {
+                    //new command, first time not notify
+                    notifyStatusMap.set(strategyInfo.command, currentStatus);
+                    continue;
+                }
 
-            if (notifyStatusMap.get(strategyInfo.command) !== currentStatus) {
-                //status has changed, notify users
-                notifyStatusMap.set(strategyInfo.command, currentStatus);
-                let chart = FileBox.fromFile(path.join(process.env.basePath, strategyInfo.chartFile));
-                await sendMsgToAllRooms(bot,
-                    '最新的' + strategyInfo.explanation + '\n' + disclaimer,
-                    chart)
-                continue;
+                if (notifyStatusMap.get(strategyInfo.command) !== currentStatus) {
+                    //status has changed, notify users
+                    notifyStatusMap.set(strategyInfo.command, currentStatus);
+                    let chart = FileBox.fromFile(path.join(process.env.basePath, strategyInfo.chartFile));
+                    await sendMsgToAllRooms(bot,
+                        '最新的' + strategyInfo.explanation + '\n' + disclaimer,
+                        chart)
+                    continue;
+                }
+            } catch (e) {
+                log.error("Check notify signal error.")
+                log.error(e)
             }
         }
         saveNotifyStatusFile(notifyStatusMap);

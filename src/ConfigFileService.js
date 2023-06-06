@@ -53,7 +53,7 @@ export function loadConfigFileAndRefresh() {
             splitArr[1].replace(/\s*/g, ""),
             splitArr[2].replace(/\s*/g, ""),
             splitArr[3].replace(/\s*/g, ""),
-            Boolean(splitArr[4].replace(/\s*/g, ""))
+            splitArr[4].replace(/\s*/g, "") === 'true'
         );
         tmpStrategyMap.set(strategyInfo.command, strategyInfo);
         tmpHelpReply = tmpHelpReply + strategyInfo.command + ': 获取最新的' + strategyInfo.explanation + '\n';
