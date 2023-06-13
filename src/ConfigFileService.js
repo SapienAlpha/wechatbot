@@ -23,7 +23,7 @@ export let helpReply = '';
 export let strategyMap = new Map();
 
 export function loadConfigFileAndRefresh() {
-    let tmpHelpReply = '您可以发送以下命令获取最新预测：\n';
+    let tmpHelpReply = '您可以发送以下命令获取最新预测：\r';
 
     let configStr = '';
     try {
@@ -56,7 +56,7 @@ export function loadConfigFileAndRefresh() {
             Boolean(splitArr[4].replace(/\s*/g, ""))
         );
         tmpStrategyMap.set(strategyInfo.command, strategyInfo);
-        tmpHelpReply = tmpHelpReply + strategyInfo.command + ': 获取最新的' + strategyInfo.explanation + '\n';
+        tmpHelpReply = tmpHelpReply + strategyInfo.command + ': 获取最新的' + strategyInfo.explanation + '\r';
     }
     helpReply = tmpHelpReply;
     strategyMap = tmpStrategyMap;

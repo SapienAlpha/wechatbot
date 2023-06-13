@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/Main.js",
+  "type": "module",
   "scripts": {
     "start:local": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.local",
     "start:aliyun": "node -r dotenv/config src/Main.js dotenv_config_path=./.env.aliyun",
@@ -12,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "qrcode-terminal": "^0.12.0",

@@ -1,0 +1,6 @@
+command,lastSentStatus
+?longtermspy,1
+?daytradev5,-1
+?daytradev6,-1
+?sp500,-1
+?shorttermnq,-3

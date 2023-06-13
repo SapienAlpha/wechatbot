@@ -1,5 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from "express";
+import bodyParser from "body-parser";
+import {onMessage} from "./MessageService.js";
+import {loadConfigFileAndRefresh} from "./ConfigFileService.js";
 
 var app = express();
 
@@ -19,7 +21,19 @@ app.use(bodyParser.json());
 
 app.post('/wechat', function (req, res) {
     console.log(req.body);
+    if (req.body === null || req.body.data === null
+        || req.body.port === null ||
+        req.body.data.fromWxid === null || req.body.data.msg === null) {
+        return;
+    }
+    let fromPort = req.body.port;
+    let fromWxid = req.body.data.fromWxid;
+    let msg = req.body.data.msg;
+    onMessage(msg, fromWxid, fromPort)
 });
+
+//init
+loadConfigFileAndRefresh();
 
 //配置服务端口
 var server = app.listen(8089, function () {

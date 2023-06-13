@@ -1,89 +1,49 @@
-#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
-/**
- * Wechaty - Conversational RPA SDK for Chatbot Makers.
- *  - https://github.com/wechaty/wechaty
- */
-// https://stackoverflow.com/a/42817956/1123955
-// https://github.com/motdotla/dotenv/issues/89#issuecomment-587753552
-
-import {ScanStatus, WechatyBuilder, log} from 'wechaty'
-
-import qrcodeTerminal from 'qrcode-terminal'
+import express from "express";
+import bodyParser from "body-parser";
 import {onMessage} from "./MessageService.js";
-
-import * as dotenv from 'dotenv'
 import {loadConfigFileAndRefresh} from "./ConfigFileService.js";
 import {checkAndNotify, sendHeartbeat} from "./NotifyService.js";
 
-dotenv.config({path: `.env.${process.env.NODE_ENV}`})
+export let fromPort = 8055;
 
-function onScan(qrcode, status) {
-    if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
-        const qrcodeImageUrl = [
-            'https://wechaty.js.org/qrcode/',
-            encodeURIComponent(qrcode),
-        ].join('')
-        log.info('StarterBot', 'onScan: %s(%s) - %s', ScanStatus[status], status, qrcodeImageUrl)
+var app = express();
 
-        qrcodeTerminal.generate(qrcode, {small: true})  // show qrcode on console
+//设置跨域访问
+app.all('*', function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", ' 3.2.1');
+    res.header("Content-Type", "application/json;charset=utf-8");
+    next();
+});
 
-    } else {
-        log.info('StarterBot', 'onScan: %s(%s)', ScanStatus[status], status)
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+
+app.post('/wechat', function (req, res) {
+    console.log(req.body);
+    if (req.body === null || req.body.data === null
+        || req.body.port === null ||
+        req.body.data.fromWxid === null || req.body.data.msg === null) {
+        return;
     }
-}
-
-function onLogin(user) {
-    log.info('StarterBot', '%s login', user)
-}
-
-function onLogout(user) {
-    log.info('StarterBot', '%s logout', user)
-}
-
-function onError(error) {
-    log.error("Bot error:" + error)
-}
+    fromPort = req.body.port;
+    let fromWxid = req.body.data.fromWxid;
+    let msg = req.body.data.msg;
+    onMessage(msg, fromWxid, fromPort)
+});
 
 //init
 loadConfigFileAndRefresh();
 
-export const bot = WechatyBuilder.build({
-    name: 'SapienAlphaBot',
-    /**
-     * How to set Wechaty Puppet Provider:
-     *
-     *  1. Specify a `puppet` option when instantiating Wechaty. (like `{ puppet: 'wechaty-puppet-whatsapp' }`, see below)
-     *  1. Set the `WECHATY_PUPPET` environment variable to the puppet NPM module name. (like `wechaty-puppet-whatsapp`)
-     *
-     * You can use the following providers locally:
-     *  - wechaty-puppet-wechat (web protocol, no token required)
-     *  - wechaty-puppet-whatsapp (web protocol, no token required)
-     *  - wechaty-puppet-padlocal (pad protocol, token required)
-     *  - etc. see: <https://wechaty.js.org/docs/puppet-providers/>
-     */
-    // puppet: 'wechaty-puppet-whatsapp'
-
-    /**
-     * You can use wechaty puppet provider 'wechaty-puppet-service'
-     *   which can connect to remote Wechaty Puppet Services
-     *   for using more powerful protocol.
-     * Learn more about services (and TOKEN) from https://wechaty.js.org/docs/puppet-services/
-     */
-    // puppet: 'wechaty-puppet-service'
-    // puppetOptions: {
-    //   token: 'xxx',
-    // }
+//配置服务端口
+var server = app.listen(8089, function () {
+    var host = server.address().address;
+    var port = server.address().port;
+    console.log('Example app listening at http://%s:%s', host, port);
 })
-
-bot.on('scan', onScan)
-bot.on('login', onLogin)
-bot.on('logout', onLogout)
-bot.on('message', onMessage)
-bot.on('error', onError)
-
-bot.start()
-    .then(() => log.info('SapienAlphaBot', 'SapienAlpha Bot Started.'))
-    .catch(e => log.error('SapienAlphaBot', e))
 
 setInterval(function () {
     checkAndNotify();

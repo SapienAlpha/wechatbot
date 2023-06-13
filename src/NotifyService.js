@@ -4,30 +4,30 @@ import {log} from 'wechaty'
 import path from "path";
 import os from 'os';
 import {disclaimer} from "./Constants.js";
-import {bot} from './Main.js';
 import {loadConfigFileAndRefresh, strategyMap} from "./ConfigFileService.js";
+import {sendChart, sendText} from "./MessageService.js";
 
-let sendSignalRoomList = ['纳指波段冲麦浪🥖🏄‍♀️', 'SapienAlpha技术部', 'SapienAlpha客服群'];
-let heartbeatRoomList = ['SapienAlpha客服群'];
+let sendSignalRoomList = ['18135061901@chatroom'];
+let heartbeatRoomList = ['18135061901@chatroom'];
 
 let i = 0;
 
 export async function checkAndNotify() {
     try {
-        // if (!fs.existsSync(process.env.sendSignalRoomListFileName)) {
-        //     fs.writeFileSync(process.env.sendSignalRoomListFileName, "")
-        // }
-        // if (!fs.existsSync(process.env.heartbeatRoomListFileName)) {
-        //     fs.writeFileSync(process.env.heartbeatRoomListFileName, "")
-        // }
-        //
-        // var sendSignalRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
-        // log.info('Send signal room list:' + sendSignalRoomListStr)
-        // sendSignalRoomList = sendSignalRoomListStr.split(",");
-        //
-        // var heartbeatRoomListStr = fs.readFileSync(process.env.heartbeatRoomListFileName).toString();
-        // log.info('Heartbeat room list:' + heartbeatRoomListStr)
-        // heartbeatRoomList = heartbeatRoomListStr.split(",");
+        if (!fs.existsSync(process.env.sendSignalRoomListFileName)) {
+            fs.writeFileSync(process.env.sendSignalRoomListFileName, "")
+        }
+        if (!fs.existsSync(process.env.heartbeatRoomListFileName)) {
+            fs.writeFileSync(process.env.heartbeatRoomListFileName, "")
+        }
+
+        var sendSignalRoomListStr = fs.readFileSync(process.env.sendSignalRoomListFileName).toString();
+        log.info('Send signal room list:' + sendSignalRoomListStr)
+        sendSignalRoomList = sendSignalRoomListStr.split(",");
+
+        var heartbeatRoomListStr = fs.readFileSync(process.env.heartbeatRoomListFileName).toString();
+        log.info('Heartbeat room list:' + heartbeatRoomListStr)
+        heartbeatRoomList = heartbeatRoomListStr.split(",");
 
         loadConfigFileAndRefresh();
 
@@ -55,10 +55,9 @@ export async function checkAndNotify() {
 
             if (notifyStatusMap.get(strategyInfo.command) !== currentStatus) {
                 //status has changed, notify users
-                let chart = FileBox.fromFile(path.join(process.env.basePath, strategyInfo.chartFile));
-                await sendMsgToAllRooms(bot,
-                    '最新的' + strategyInfo.explanation + '\n' + disclaimer,
-                    chart)
+                let chartPath = process.env.basePath + strategyInfo.chartFile;
+                await sendMsgToAllRooms('最新的' + strategyInfo.explanation + '\r' + disclaimer,
+                    chartPath)
                 continue;
             }
         }
@@ -70,24 +69,13 @@ export async function checkAndNotify() {
 }
 
 export async function sendHeartbeat() {
-    if (bot === null || !bot.isLoggedIn) {
-        //bot为空，或未登录，无法发送通知
-        log.error("bot is null or not loggedIn.")
-        return;
-    }
-
     //send heartbeat
-    for (const roomName of heartbeatRoomList) {
-        if (roomName === null || roomName === '') {
+    for (const wxid of heartbeatRoomList) {
+        if (wxid === null || wxid === '') {
             continue;
         }
         try {
-            var room = await bot.Room.find({topic: roomName});
-            if (room === null) {
-                log.error("find heartbeat room fail, roomName:" + roomName);
-            } else {
-                await sendMsgToRoomWithRetry(room, 'SapienAlpha客服群', "heartbeat" + i);
-            }
+            sendText("heartbeat" + i,wxid,fromPort);
         } catch (error) {
             log.error("find heartbeat room error, roomName:" + roomName);
             log.error(error)
@@ -119,24 +107,23 @@ function loadNotifyStatusFile() {
     return notifyStatusMap;
 }
 
-function saveNotifyStatusFile(notifyStatusMap){
-    let content='command,lastSentStatus'+os.EOL;
+function saveNotifyStatusFile(notifyStatusMap) {
+    let content = 'command,lastSentStatus' + os.EOL;
     for (let entry of notifyStatusMap.entries()) {
-        content=content+entry[0]+','+entry[1]+os.EOL;
+        content = content + entry[0] + ',' + entry[1] + os.EOL;
     }
 
     fs.writeFileSync(process.env.notifyStatusFileName, content)
 }
 
-async function sendMsgToAllRooms(bot, note, chart) {
-    for (const roomName of sendSignalRoomList) {
-        if (roomName === null || roomName === '') {
+async function sendMsgToAllRooms(note, chartPath) {
+    for (const wxid of sendSignalRoomList) {
+        if (wxid === null || wxid === '') {
             continue;
         }
         try {
-            var room = await bot.Room.find({topic: roomName});
-            await sendMsgToRoomWithRetry(room, roomName, note);
-            await sendMsgToRoomWithRetry(room, roomName, chart);
+            sendText(note, wxid, fromPort);
+            sendChart(chartPath,wxid,fromPort);
         } catch (error) {
             log.error("send msg to room error, room:" + roomName);
             log.error(error)
@@ -144,22 +131,5 @@ async function sendMsgToAllRooms(bot, note, chart) {
     }
 }
 
-async function sendMsgToRoomWithRetry(room, roomTopic, msg) {
-    if (room === null) {
-        log.error("Room is null, room:" + roomTopic);
-    }
-
-    for (let count = 0; count < 3; count++) {
-        try {
-            await sleep(1000);
-            await room.say(msg);
-            return;
-        } catch (error) {
-            log.error("send msg error, count:" + count)
-            log.error(error)
-        }
-    }
-
-}
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))

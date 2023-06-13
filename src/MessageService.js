@@ -1,28 +1,61 @@
-import {log} from "wechaty";
-import {FileBox} from "file-box";
-import * as path from 'path';
 import {disclaimer} from "./Constants.js";
 import {helpReply, strategyMap} from "./ConfigFileService.js";
+import axios from "axios";
 
-export async function onMessage(msg) {
+export async function onMessage(msg, fromWxid, fromPort) {
     try {
-        log.info('Receive message: ', msg.toString());
-
-        var command = msg.text().toLowerCase().replace('？', '?').replace(/\s*/g, "");
+        let command = msg.toLowerCase().replace('？', '?').replace(/\s*/g, "");
         if (command === null || command === '' || command === undefined) {
             return;
         }
 
         if ('?help' === command) {
-            msg.say(helpReply);
+            sendText(helpReply, fromWxid, fromPort);
         } else if (strategyMap.has(command)) {
             var strategyInfo = strategyMap.get(command);
-            let chart = FileBox.fromFile(path.join(process.env.basePath, strategyInfo.chartFile));
-            await msg.say('最新的' + strategyInfo.explanation + '\n' +
-                disclaimer)
-            await msg.say(chart)
+            let path=process.env.basePath+ strategyInfo.chartFile;
+            await sendText('最新的' + strategyInfo.explanation + '\r' + disclaimer,
+                fromWxid,
+                fromPort);
+            await sendChart(path,fromWxid,fromPort);
         }
     } catch (e) {
-        log.error("onMessage error, msg:" + msg.toString() + "error:" + e.toString());
+        console.log("onMessage error, msg:" + msg.toString() + "error:" + e.toString());
     }
+}
+
+export function sendText(text, fromWxid, fromPort) {
+    const data = {
+        type: 'Q0001',
+        data: {
+            wxid: fromWxid,
+            msg: text
+        }
+    }
+    let url = 'http://192.168.1.13:' + fromPort + '/DaenWxHook/client/';
+    axios.post(url, data)
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+}
+
+export function sendChart(path, fromWxid, fromPort) {
+    const data = {
+        type: 'Q0010',
+        data: {
+            wxid: fromWxid,
+            path: path
+        }
+    }
+    let url = 'http://192.168.1.13:' + fromPort + '/DaenWxHook/client/';
+    axios.post(url, data)
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
 }
