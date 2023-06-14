@@ -62,3 +62,14 @@ npm install
 群配置在代码中，为什么在代码中：通过配置文件总是出现发送失败的问题
 
 参考文档：https://blog.51cto.com/u_11866025/5659688
+
+获取群聊列表：
+Method:POST
+URL:http://{ip}:8055/DaenWxHook/client/
+Body:
+```json
+{
+    "type": "Q0006",
+    "data": {}
+}
+```

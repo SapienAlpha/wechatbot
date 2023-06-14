@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 
 app.post('/wechat', function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body === null || req.body.data === null
         || req.body.port === null ||
         req.body.data.fromWxid === null || req.body.data.msg === null) {

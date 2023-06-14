@@ -1,4 +1,3 @@
-import {FileBox} from 'file-box';
 import * as fs from 'fs';
 import {log} from 'wechaty'
 import path from "path";

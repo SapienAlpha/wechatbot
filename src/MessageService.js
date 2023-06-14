@@ -32,7 +32,7 @@ export function sendText(text, fromWxid, fromPort) {
             msg: text
         }
     }
-    let url = 'http://192.168.1.13:' + fromPort + '/DaenWxHook/client/';
+    let url = 'http://localhost:' + fromPort + '/DaenWxHook/client/';
     axios.post(url, data)
         .then(function (response) {
             console.log(response);
@@ -50,7 +50,7 @@ export function sendChart(path, fromWxid, fromPort) {
             path: path
         }
     }
-    let url = 'http://192.168.1.13:' + fromPort + '/DaenWxHook/client/';
+    let url = 'http://localhost:' + fromPort + '/DaenWxHook/client/';
     axios.post(url, data)
         .then(function (response) {
             console.log(response);

@@ -1,6 +1,5 @@
 import fs from "fs";
 import os from "os";
-import path from "path";
 import {log} from "wechaty";
 
 let defaultConfigStr = 'command,explanation,chartFile,statusFile,enableNotify\n' +
